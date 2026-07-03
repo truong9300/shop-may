@@ -1,0 +1,212 @@
+<!-- Chatbot Widget — nhúng vào website -->
+<div id="chatbot-widget" style="display:none">
+  <style>
+    #chatbot-widget { font-family: 'Inter', system-ui, sans-serif; }
+    #cb-toggle {
+      position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      color: white; border: none; cursor: pointer;
+      box-shadow: 0 4px 20px rgba(14,165,233,0.4);
+      font-size: 24px; display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s ease;
+    }
+    #cb-toggle:hover { transform: scale(1.1); box-shadow: 0 6px 30px rgba(14,165,233,0.6); }
+    #cb-toggle.active { transform: rotate(45deg); }
+
+    #cb-panel {
+      position: fixed; bottom: 92px; right: 24px; z-index: 9999;
+      width: 380px; max-height: 600px; height: 70vh;
+      background: white; border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      display: flex; flex-direction: column;
+      overflow: hidden; transition: all 0.3s ease;
+      transform-origin: bottom right;
+    }
+    #cb-panel.hidden { opacity: 0; transform: scale(0.8); pointer-events: none; }
+
+    #cb-header {
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      color: white; padding: 16px 20px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    #cb-header h3 { margin: 0; font-size: 16px; font-weight: 700; }
+    #cb-header p { margin: 2px 0 0; font-size: 11px; opacity: 0.8; }
+
+    #cb-messages {
+      flex: 1; overflow-y: auto; padding: 16px;
+      display: flex; flex-direction: column; gap: 8px;
+      background: #f8fafc;
+    }
+
+    .cb-msg { max-width: 85%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.5; white-space: pre-wrap; }
+    .cb-msg.user { align-self: flex-end; background: #0ea5e9; color: white; border-bottom-right-radius: 4px; }
+    .cb-msg.bot { align-self: flex-start; background: white; color: #1e293b; border: 1px solid #e2e8f0; border-bottom-left-radius: 4px; }
+    .cb-msg.bot.typing { background: #f1f5f9; border-color: transparent; }
+    .cb-msg.bot.typing::after { content: '...'; animation: dots 1.5s steps(4) infinite; display: inline-block; width: 20px; text-align: left; }
+    @keyframes dots { 0%,20% { content: ''; } 40% { content: '.'; } 60% { content: '..'; } 80%,100% { content: '...'; } }
+
+    #cb-input-area {
+      padding: 12px 16px; border-top: 1px solid #e2e8f0;
+      display: flex; gap: 8px; background: white;
+    }
+    #cb-input {
+      flex: 1; border: 1px solid #e2e8f0; border-radius: 12px;
+      padding: 10px 14px; font-size: 14px; outline: none;
+      transition: border-color 0.2s; resize: none; max-height: 80px;
+    }
+    #cb-input:focus { border-color: #0ea5e9; }
+
+    #cb-send {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: #0ea5e9; color: white; border: none;
+      cursor: pointer; font-size: 18px; display: flex;
+      align-items: center; justify-content: center;
+      flex-shrink: 0; transition: background 0.2s;
+    }
+    #cb-send:hover { background: #0284c7; }
+    #cb-send:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    @media (max-width: 480px) {
+      #cb-panel { width: calc(100vw - 32px); right: 16px; bottom: 84px; height: 65vh; }
+      #cb-toggle { right: 16px; bottom: 16px; }
+    }
+  </style>
+
+  <!-- Nút toggle -->
+  <button id="cb-toggle" onclick="toggleChatbot()" aria-label="Chat">💬</button>
+
+  <!-- Panel chat -->
+  <div id="cb-panel" class="hidden">
+    <div id="cb-header">
+      <span style="font-size:24px">🤖</span>
+      <div>
+        <h3>Shop Mây AI</h3>
+        <p>Hỗ trợ 24/7 — GLM 5.2</p>
+      </div>
+      <button onclick="toggleChatbot()" style="margin-left:auto;background:none;border:none;color:white;font-size:20px;cursor:pointer">✕</button>
+    </div>
+
+    <div id="cb-messages">
+      <div class="cb-msg bot">
+        Xin chào! Tôi là trợ lý AI của Shop Mây. Tôi có thể giúp gì cho bạn?
+      </div>
+    </div>
+
+    <div id="cb-input-area">
+      <textarea id="cb-input" rows="1" placeholder="Nhập tin nhắn..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMessage()}"></textarea>
+      <button id="cb-send" onclick="sendChatMessage()">➤</button>
+    </div>
+  </div>
+
+  <script>
+    const CHAT_API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+      ? 'http://localhost:3000/api/chat' : '/api/chat';
+    
+    let cbOpen = false;
+    function toggleChatbot() {
+      cbOpen = !cbOpen;
+      document.getElementById('cb-panel').classList.toggle('hidden');
+      document.getElementById('cb-toggle').classList.toggle('active');
+      if (cbOpen) autoResizeInput();
+    }
+
+    function autoResizeInput() {
+      const ta = document.getElementById('cb-input');
+      ta.style.height = 'auto';
+      ta.style.height = Math.min(ta.scrollHeight, 80) + 'px';
+    }
+
+    function addMessage(text, role) {
+      const container = document.getElementById('cb-messages');
+      const div = document.createElement('div');
+      div.className = 'cb-msg ' + role;
+      div.textContent = text;
+      if (role === 'user') div.textContent = text;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+      return div;
+    }
+
+    async function sendChatMessage() {
+      const input = document.getElementById('cb-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      input.value = '';
+      autoResizeInput();
+      addMessage(text, 'user');
+
+      const btn = document.getElementById('cb-send');
+      btn.disabled = true;
+
+      // Typing indicator
+      const typingEl = addMessage('', 'bot');
+      typingEl.classList.add('typing');
+      typingEl.textContent = 'Đang suy nghĩ';
+
+      // Collect history (last 10 messages)
+      const msgs = document.querySelectorAll('#cb-messages .cb-msg:not(.typing)');
+      const messages = [];
+      msgs.forEach(m => {
+        const role = m.classList.contains('user') ? 'user' : 'assistant';
+        const content = role === 'user' ? m.textContent : m.textContent;
+        if (m !== typingEl && !m.classList.contains('typing')) {
+          messages.push({ role, content: content || '' });
+        }
+      });
+
+      try {
+        const res = await fetch(CHAT_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'z-ai/glm-5.2',
+            messages,
+            temperature: 0.7,
+            max_tokens: 2048,
+          }),
+        });
+
+        if (!res.ok) throw new Error(await res.text());
+
+        // Xóa typing indicator
+        typingEl.remove();
+
+        // Stream response
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        const replyEl = addMessage('', 'bot');
+        let buffer = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split('\n').filter(l => l.startsWith('data: ') && l !== 'data: [DONE]');
+
+          for (const line of lines) {
+            try {
+              const json = JSON.parse(line.replace('data: ', ''));
+              const content = json.choices?.[0]?.delta?.content || '';
+              if (content) {
+                buffer += content;
+                replyEl.textContent = buffer;
+                replyEl.parentElement.scrollTop = replyEl.parentElement.scrollHeight;
+              }
+            } catch {}
+          }
+        }
+      } catch (err) {
+        typingEl.remove();
+        addMessage('❌ Lỗi: ' + (err.message || 'Không thể kết nối máy chủ'), 'bot');
+      }
+
+      btn.disabled = false;
+    }
+
+    // Auto-resize input
+    document.getElementById('cb-input').addEventListener('input', autoResizeInput);
+  </script>
+</div>
