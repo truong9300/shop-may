@@ -1,0 +1,110 @@
+[
+  {
+    "id": 1,
+    "name": "iPhone 15 Pro Max",
+    "category": "phone",
+    "price": 33990000,
+    "image": "📱",
+    "desc": "Chip A17 Pro Titanium",
+    "badge": "Mới"
+  },
+  {
+    "id": 2,
+    "name": "MacBook Air M3",
+    "category": "laptop",
+    "price": 27990000,
+    "image": "💻",
+    "desc": "Chip M3 15\" 18h pin",
+    "badge": "Hot"
+  },
+  {
+    "id": 3,
+    "name": "AirPods Pro 2",
+    "category": "audio",
+    "price": 5990000,
+    "image": "🎧",
+    "desc": "ANC USB-C Adaptive",
+    "badge": "Bán chạy"
+  },
+  {
+    "id": 4,
+    "name": "Samsung Galaxy S24 Ultra",
+    "category": "phone",
+    "price": 31990000,
+    "image": "📱",
+    "desc": "Snapdragon 8 Gen 3",
+    "badge": ""
+  },
+  {
+    "id": 5,
+    "name": "Dell XPS 15",
+    "category": "laptop",
+    "price": 39990000,
+    "image": "💻",
+    "desc": "Core Ultra 7 OLED 3.5K",
+    "badge": ""
+  },
+  {
+    "id": 6,
+    "name": "Sony WH-1000XM5",
+    "category": "audio",
+    "price": 7490000,
+    "image": "🎧",
+    "desc": "Noise Cancelling 30h",
+    "badge": ""
+  },
+  {
+    "id": 7,
+    "name": "Apple Watch Ultra 2",
+    "category": "accessory",
+    "price": 19990000,
+    "image": "⌚",
+    "desc": "Titanium GPS+Cellular",
+    "badge": "Mới"
+  },
+  {
+    "id": 8,
+    "name": "Logitech MX Master 3S",
+    "category": "accessory",
+    "price": 2290000,
+    "image": "🖱️",
+    "desc": "Silent click 8K DPI",
+    "badge": ""
+  },
+  {
+    "id": 9,
+    "name": "iPad Pro M4",
+    "category": "accessory",
+    "price": 29990000,
+    "image": "📟",
+    "desc": "M4 chip Ultra Retina XDR",
+    "badge": "Mới"
+  },
+  {
+    "id": 10,
+    "name": "Samsung Galaxy Buds3 Pro",
+    "category": "audio",
+    "price": 4290000,
+    "image": "🎧",
+    "desc": "Blade Light ANC 2-way",
+    "badge": "Bán chạy"
+  },
+  {
+    "id": 11,
+    "name": "ASUS ROG Zephyrus G14",
+    "category": "laptop",
+    "price": 35990000,
+    "image": "💻",
+    "desc": "Ryzen 9 RTX 4070 14\"",
+    "badge": ""
+  },
+  {
+    "id": 12,
+    "name": "Xiaomi Smart Band 8 Pro",
+    "category": "accessory",
+    "price": 1390000,
+    "image": "⌚",
+    "desc": "AMOLED 60Hz GPS",
+    "badge": "Hot"
+  }
+]

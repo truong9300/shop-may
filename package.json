@@ -1,0 +1,13 @@
+{
+  "name": "shop-may",
+  "version": "1.0.0",
+  "description": "Shop Mây ☁️ — Web bán hàng deploy Vercel",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'Static site — no build needed'",
+    "start": "vercel start"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

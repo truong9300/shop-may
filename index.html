@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi" class="scroll-smooth">
 <head>
-  <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shop Mây ☁️ — Cửa hàng online</title>
@@ -221,29 +220,29 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Họ và tên</label>
-              <input required type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" placeholder="Nguyễn Văn A">
+              <input required type="text" name="name" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" placeholder="Nguyễn Văn A">
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Số điện thoại</label>
-              <input required type="tel" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" placeholder="0912 345 678">
+              <input required type="tel" name="phone" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" placeholder="0912 345 678">
             </div>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input required type="email" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" placeholder="email@example.com">
+            <input required type="email" name="email" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" placeholder="email@example.com">
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Địa chỉ</label>
-            <input required type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" placeholder="Số nhà, đường, phường/xã">
+            <input required type="text" name="address" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" placeholder="Số nhà, đường, phường/xã">
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Quận/Huyện</label>
-              <input required type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" placeholder="Quận 1">
+              <input required type="text" name="district" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" placeholder="Quận 1">
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Tỉnh/Thành phố</label>
-              <input required type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" placeholder="TP. Hồ Chí Minh">
+              <input required type="text" name="city" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" placeholder="TP. Hồ Chí Minh">
             </div>
           </div>
         </div>
@@ -315,7 +314,7 @@
       <h2 class="text-3xl font-bold text-gray-900 mb-4">Đặt hàng thành công!</h2>
       <p class="text-gray-500 mb-2">Cảm ơn bạn đã mua sắm tại Shop Mây.</p>
       <p class="text-gray-500 mb-8">Mã đơn hàng: <span id="order-id" class="font-mono font-bold text-brand-600"></span></p>
-      <p class="text-sm text-gray-400 mb-8">Đơn hàng đã được ghi vào Google Sheets. Chúng tôi sẽ liên hệ với bạn sớm.</p>
+      <p class="text-sm text-gray-400 mb-8">Chúng tôi sẽ liên hệ với bạn sớm qua email hoặc điện thoại.</p>
       <button onclick="showSection('home'); clearCart();" class="bg-brand-500 text-white font-bold px-8 py-3 rounded-xl hover:bg-brand-600 transition btn-bounce">
         Tiếp tục mua sắm
       </button>
@@ -351,7 +350,7 @@
         </div>
       </div>
       <div class="border-t border-gray-800 mt-8 pt-8 text-center text-sm">
-        © 2026 Shop Mây. Powered by <a href="https://workspace.google.com/products/sheets/" target="_blank" class="text-brand-400 hover:underline">Google Sheets</a> + <a href="https://openclaw.ai" target="_blank" class="text-brand-400 hover:underline">OpenClaw</a>
+        © 2026 Shop Mây. Powered by <a href="https://vercel.com" target="_blank" class="text-brand-400 hover:underline">Vercel</a> + <a href="https://openclaw.ai" target="_blank" class="text-brand-400 hover:underline">☁️ Mây</a>
       </div>
     </div>
   </footer>
@@ -364,6 +363,18 @@
 
   <script>
     // ============================================================
+    // API BASE — tự động detect Vercel deployment URL
+    // ============================================================
+    const API_BASE = (() => {
+      // Khi chạy local (file://), dùng full URL của Vercel hoặc local server
+      const host = window.location.hostname;
+      if (host === 'localhost' || host === '127.0.0.1' || host === '') {
+        return 'http://localhost:3000';
+      }
+      return '';
+    })();
+
+    // ============================================================
     // APP STATE
     // ============================================================
     let products = [];
@@ -371,28 +382,28 @@
     let currentFilter = 'all';
 
     // ============================================================
-    // INIT — load products từ Google Sheets
+    // INIT — fetch products từ Vercel API
     // ============================================================
-    function initApp() {
+    async function initApp() {
       document.getElementById('loading-overlay').classList.remove('hidden');
       document.getElementById('error-overlay').classList.add('hidden');
 
-      google.script.run
-        .withSuccessHandler(function(data) {
-          products = data || [];
-          document.getElementById('loading-overlay').classList.add('hidden');
-          document.getElementById('section-home').classList.remove('hidden');
-          document.getElementById('product-count').textContent = products.length + ' sản phẩm';
-          renderFeatured();
-          renderAllProducts();
-          updateCartUI();
-        })
-        .withFailureHandler(function(err) {
-          document.getElementById('loading-overlay').classList.add('hidden');
-          document.getElementById('error-overlay').classList.remove('hidden');
-          document.getElementById('error-msg').textContent = err.message || 'Lỗi không xác định';
-        })
-        .getProducts();
+      try {
+        const res = await fetch(API_BASE + '/api/products');
+        if (!res.ok) throw new Error(await res.text());
+        products = await res.json();
+
+        document.getElementById('loading-overlay').classList.add('hidden');
+        document.getElementById('section-home').classList.remove('hidden');
+        document.getElementById('product-count').textContent = products.length + ' sản phẩm';
+        renderFeatured();
+        renderAllProducts();
+        updateCartUI();
+      } catch (err) {
+        document.getElementById('loading-overlay').classList.add('hidden');
+        document.getElementById('error-overlay').classList.remove('hidden');
+        document.getElementById('error-msg').textContent = err.message || 'Không thể kết nối đến máy chủ';
+      }
     }
 
     // ============================================================
@@ -411,8 +422,8 @@
           ${badgeHTML}
           <div class="bg-gradient-to-br from-gray-50 to-gray-100 p-8 text-center text-6xl">${p.image || '📦'}</div>
           <div class="p-5">
-            <h3 class="font-semibold text-gray-900 mb-1 line-clamp-1">${p.name}</h3>
-            <p class="text-sm text-gray-500 mb-3 line-clamp-1">${p.desc || ''}</p>
+            <h3 class="font-semibold text-gray-900 mb-1 line-clamp-1">${escapeHtml(p.name)}</h3>
+            <p class="text-sm text-gray-500 mb-3 line-clamp-1">${escapeHtml(p.desc || '')}</p>
             <div class="flex items-center justify-between">
               <span class="text-lg font-bold text-brand-600">${formatPrice(p.price)}</span>
               <button onclick="addToCart(${p.id})" class="bg-brand-500 text-white p-2.5 rounded-xl hover:bg-brand-600 transition btn-bounce shadow-sm">
@@ -421,6 +432,12 @@
             </div>
           </div>
         </div>`;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
     }
 
     function renderFeatured() {
@@ -524,7 +541,7 @@
             <div class="flex gap-4 bg-gray-50 rounded-xl p-3">
               <div class="text-3xl bg-white rounded-lg w-16 h-16 flex items-center justify-center flex-shrink-0">${p.image || '📦'}</div>
               <div class="flex-1 min-w-0">
-                <h4 class="font-medium text-gray-900 text-sm line-clamp-1">${p.name}</h4>
+                <h4 class="font-medium text-gray-900 text-sm line-clamp-1">${escapeHtml(p.name)}</h4>
                 <p class="text-brand-600 font-semibold text-sm">${formatPrice(p.price)}</p>
                 <div class="flex items-center gap-2 mt-2">
                   <button onclick="changeQty(${c.id}, -1)" class="w-7 h-7 rounded-lg bg-white border text-gray-600 hover:bg-gray-100 flex items-center justify-center text-sm font-bold transition">−</button>
@@ -551,7 +568,7 @@
         checkoutItems.innerHTML = cart.map(c => {
           const p = products.find(x => x.id === c.id);
           if (!p) return '';
-          return `<div class="flex justify-between text-sm"><span class="text-gray-600">${p.name} × ${c.qty}</span><span class="font-medium">${formatPrice(p.price * c.qty)}</span></div>`;
+          return `<div class="flex justify-between text-sm"><span class="text-gray-600">${escapeHtml(p.name)} × ${c.qty}</span><span class="font-medium">${formatPrice(p.price * c.qty)}</span></div>`;
         }).join('');
       }
       document.getElementById('checkout-subtotal').textContent = formatPrice(total);
@@ -573,9 +590,9 @@
     }
 
     // ============================================================
-    // CHECKOUT — ghi order vào Google Sheets
+    // CHECKOUT — gửi order qua Vercel API
     // ============================================================
-    function handleCheckout(e) {
+    async function handleCheckout(e) {
       e.preventDefault();
 
       const btn = document.getElementById('order-submit-btn');
@@ -583,36 +600,47 @@
       btn.textContent = '⏳ Đang xử lý...';
 
       const form = document.getElementById('checkout-form');
-      const data = new FormData(form);
+      const fd = new FormData(form);
+
+      const address = [
+        fd.get('address') || '',
+        fd.get('district') || '',
+        fd.get('city') || ''
+      ].filter(Boolean).join(', ');
 
       const order = {
-        customerName: data.get('name') || data.get('customerName') || document.querySelector('#checkout-form input[placeholder="Nguyễn Văn A"]').value,
-        phone: document.querySelector('#checkout-form input[type="tel"]').value,
-        email: document.querySelector('#checkout-form input[type="email"]').value,
-        address: document.querySelector('#checkout-form input[placeholder="Số nhà, đường, phường/xã"]').value +
-          ', ' + document.querySelector('#checkout-form input[placeholder="Quận 1"]').value +
-          ', ' + document.querySelector('#checkout-form input[placeholder="TP. Hồ Chí Minh"]').value,
-        payment: document.querySelector('input[name="payment"]:checked').value,
+        customerName: fd.get('name') || '',
+        phone: fd.get('phone') || '',
+        email: fd.get('email') || '',
+        address: address,
+        payment: fd.get('payment') || 'cod',
         items: cart.map(c => {
           const p = products.find(x => x.id === c.id);
-          return { name: p.name, qty: c.qty, price: p.price };
+          return { name: p?.name, qty: c.qty, price: p?.price };
         }),
         total: getCartTotal()
       };
 
-      google.script.run
-        .withSuccessHandler(function(result) {
-          document.getElementById('order-id').textContent = result.orderId;
-          showSection('success');
-          btn.disabled = false;
-          btn.textContent = '✅ Đặt hàng';
-        })
-        .withFailureHandler(function(err) {
-          showToast('❌', 'Lỗi: ' + (err.message || 'Không thể đặt hàng'));
-          btn.disabled = false;
-          btn.textContent = '✅ Đặt hàng';
-        })
-        .placeOrder(order);
+      try {
+        const res = await fetch(API_BASE + '/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(order)
+        });
+
+        const result = await res.json();
+
+        if (!res.ok) throw new Error(result.error || 'Không thể đặt hàng');
+
+        document.getElementById('order-id').textContent = result.orderId;
+        showSection('success');
+        showToast('🎉', 'Đặt hàng thành công! Mã: ' + result.orderId);
+      } catch (err) {
+        showToast('❌', 'Lỗi: ' + (err.message || 'Không thể đặt hàng'));
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '✅ Đặt hàng';
+      }
     }
 
     // ============================================================
